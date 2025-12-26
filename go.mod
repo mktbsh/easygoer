@@ -1,4 +1,4 @@
-module easygoer
+module github.com/mktbsh/easygoer
 
 go 1.25.0
 
