@@ -15,6 +15,37 @@ It provides a collection of helper functions for slices, strings, maps, and syst
 go get github.com/mktbsh/easygoer
 ```
 
+## 📦 Packages
+
+### crypto/envelope
+
+Provides envelope encryption and decryption functionality using AES-256-GCM.
+
+```go
+import "github.com/mktbsh/easygoer/crypto/envelope"
+
+// Generate a KEK (Key Encryption Key)
+kek, err := envelope.GenerateKEK()
+
+// Encrypt data
+data := []byte("Secret message")
+env, err := envelope.Encrypt(data, kek)
+
+// Decrypt data
+decrypted, err := envelope.Decrypt(env, kek)
+```
+
+### dirs
+
+XDG Base Directory specification compliant directory management.
+
+```go
+import "github.com/mktbsh/easygoer/dirs"
+
+paths, err := dirs.Resolve("myapp")
+// Access paths.ConfigDir, paths.DataDir, etc.
+```
+
 ## 💡 Usage
 
 Import the package into your code:
