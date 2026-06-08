@@ -7,12 +7,14 @@ import (
 	"path/filepath"
 )
 
-func resolveXDG(appName string, homeOverride string) (Paths, error) {
+func resolveXDG(appName string, baseDir string) (Paths, error) {
 	if appName == "" {
 		return Paths{}, errors.New("appName is required")
 	}
 
-	home := homeOverride
+	home := baseDir
+	useEnv := baseDir == ""
+
 	if home == "" {
 		var err error
 		home, err = os.UserHomeDir()
@@ -21,11 +23,21 @@ func resolveXDG(appName string, homeOverride string) (Paths, error) {
 		}
 	}
 
-	cfgHome := getenvOr("XDG_CONFIG_HOME", filepath.Join(home, ".config"))
-	dataHome := getenvOr("XDG_DATA_HOME", filepath.Join(home, ".local", "share"))
-	stateHome := getenvOr("XDG_STATE_HOME", filepath.Join(home, ".local", "state"))
-	cacheHome := getenvOr("XDG_CACHE_HOME", filepath.Join(home, ".cache"))
-	runtimeDir := os.Getenv("XDG_RUNTIME_DIR") // may be empty on macOS
+	home = filepath.Clean(home)
+
+	cfgHome := filepath.Join(home, ".config")
+	dataHome := filepath.Join(home, ".local", "share")
+	stateHome := filepath.Join(home, ".local", "state")
+	cacheHome := filepath.Join(home, ".cache")
+	runtimeDir := ""
+
+	if useEnv {
+		cfgHome = getenvOr("XDG_CONFIG_HOME", cfgHome)
+		dataHome = getenvOr("XDG_DATA_HOME", dataHome)
+		stateHome = getenvOr("XDG_STATE_HOME", stateHome)
+		cacheHome = getenvOr("XDG_CACHE_HOME", cacheHome)
+		runtimeDir = os.Getenv("XDG_RUNTIME_DIR")
+	}
 
 	cfgHome = cleanAbs(cfgHome, home)
 	dataHome = cleanAbs(dataHome, home)

@@ -44,20 +44,20 @@ func Resolve(appName string, opts ...Option) (Paths, error) {
 	for _, opt := range opts {
 		opt(&cfg)
 	}
-	return resolveXDG(cfg.appName, cfg.homeDirOverride)
+	return resolveXDG(cfg.appName, cfg.baseDir)
 }
 
 type resolveConfig struct {
-	appName         string
-	homeDirOverride string
+	appName string
+	baseDir string
 }
 
 type Option func(*resolveConfig)
 
-// WithHomeDir overrides the home directory used for resolution.
+// WithBaseDir overrides the base directory used for resolution.
 // Intended mainly for tests or specialized environments.
-func WithHomeDir(home string) Option {
+func WithBaseDir(base string) Option {
 	return func(c *resolveConfig) {
-		c.homeDirOverride = home
+		c.baseDir = base
 	}
 }
