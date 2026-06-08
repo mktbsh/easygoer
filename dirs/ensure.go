@@ -27,19 +27,19 @@ func (p Paths) Ensure() error {
 		p.PKIDir,
 		p.ServiceDir,
 	} {
-		if err := mkdir0700(dir); err != nil {
+		if err := ensureDir(dir); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func mkdir0700(path string) error {
+func ensureDir(path string) error {
 	if path == "" {
-		return errors.New("mkdir: empty path")
+		return errors.New("ensureDir: empty path")
 	}
 	if err := os.MkdirAll(path, 0o700); err != nil {
-		return fmt.Errorf("mkdir %s: %w", path, err)
+		return fmt.Errorf("ensureDir %s: %w", path, err)
 	}
 	if err := os.Chmod(path, 0o700); err != nil {
 		return fmt.Errorf("chmod %s: %w", path, err)
